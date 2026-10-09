@@ -82,8 +82,13 @@ func handleCreateDataset(client *truenas.Client, args map[string]interface{}) (s
 		payload["create_ancestors"] = true
 	}
 
+	// The 25.10 API takes readonly as "ON"/"OFF", not a bool
 	if readonly, ok := args["readonly"].(bool); ok {
-		payload["readonly"] = readonly
+		if readonly {
+			payload["readonly"] = "ON"
+		} else {
+			payload["readonly"] = "OFF"
+		}
 	}
 
 	if dedup, ok := args["deduplication"].(string); ok && dedup != "" {
