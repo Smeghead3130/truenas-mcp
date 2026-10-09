@@ -127,6 +127,14 @@ This document provides a comprehensive list of all available MCP tools for TrueN
     - Step 7: Preview with dry-run
     - Step 8: Execute installation
 
+- **deploy_custom_app** - Install or update a custom app from a docker compose document
+  - Covers apps that aren't in the catalog; `update_app` can't update custom apps
+  - Takes the compose file as an object (its JSON form)
+  - Bind mount sources must be under /mnt/ (same host-path policy as install_app)
+  - Warns about privileged containers, host networking, added capabilities and mapped devices
+  - Supports dry-run mode to validate and preview
+  - Returns task ID for tracking progress
+
 - **delete_app** - Remove installed applications
   - IMPORTANT: Host-path datasets are NOT deleted (preserved for data safety)
   - Data remains in original locations for manual cleanup

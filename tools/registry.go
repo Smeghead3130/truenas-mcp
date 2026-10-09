@@ -1300,6 +1300,39 @@ For IPA: {hostname: "ipa.example.com", domain: "example.com", ...}
 		Handler: r.handleUpdateAppWithDryRun,
 	}
 
+	// Deploy (install or update) a custom docker-compose app
+	r.tools["deploy_custom_app"] = Tool{
+		Definition: mcp.Tool{
+			Name:        "deploy_custom_app",
+			Description: "Install a TrueNAS custom app from a docker compose document (update=false), or replace an existing custom app's compose document (update=true). Pass the compose file as an object (its JSON form). Bind mounts must be under /mnt/. Job-based; use tasks_get with the returned task_id. Supports dry_run to validate and preview. This is a write operation.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"app_name": map[string]interface{}{
+						"type":        "string",
+						"description": "App name (lowercase alphanumeric and hyphens)",
+					},
+					"compose": map[string]interface{}{
+						"type":        "object",
+						"description": "Docker compose document as an object, e.g. {\"services\": {\"web\": {\"image\": \"nginx:1.27\", \"ports\": [\"8080:80\"]}}}",
+					},
+					"update": map[string]interface{}{
+						"type":        "boolean",
+						"description": "true to replace the compose config of an existing custom app (default: false)",
+						"default":     false,
+					},
+					"dry_run": map[string]interface{}{
+						"type":        "boolean",
+						"description": "Validate and preview without executing (default: false)",
+						"default":     false,
+					},
+				},
+				"required": []string{"app_name", "compose"},
+			},
+		},
+		Handler: r.handleDeployCustomAppWithDryRun,
+	}
+
 	// Search app catalog
 	r.tools["search_app_catalog"] = Tool{
 		Definition: mcp.Tool{
